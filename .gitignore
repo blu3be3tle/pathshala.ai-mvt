@@ -1,79 +1,98 @@
-# Django-specific ignores
-*.log
-*.sqlite3
-*.db
-db.sqlite3
+# ============================================
+#   DJANGO & PYTHON – PROJECT .gitignore
+# ============================================
+
+# --- Python bytecode & cache ---
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# Virtual environment
-.venv/
+# --- Django SQLite / local DB ---
+db.sqlite3
+*.sqlite3
+*.db
+
+# --- Django secrets & local settings ---
+.env
+*.env
+.env.*
+secret_key.txt
+local_settings.py
+
+# --- Django logs ---
+*.log
+
+# --- Virtual environments ---
 env/
 venv/
+.venv/
 ENV/
+env.bak/
+venv.bak/
 
-# Python bytecode and metadata
+# --- Python packaging ---
 *.egg-info/
 *.egg
-*.coverage
-*.cover
-*.hypothesis/
-*.tox/
-*.mypy_cache/
-*.pytest_cache/
-*.coverage.*
-*.coveragerc
-*.coverage.*
-*.coveragerc
-
-# Django secret key and local settings
-*.env
-.env
-local_settings.py
-secret_key.txt
-
-# IDE and editor files
-.DS_Store
-*.vscode/
-
-# Build and package files
 dist/
 build/
-*.egg-info/
 *.whl
 
-# OS-generated files
+# --- Testing ---
+.pytest_cache/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+
+# --- Coverage config dump ---
+*.cover
+*.coveragerc
+
+# --- MyPy / type checking ---
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# --- Hypothesis test data ---
+.hypothesis/
+
+# --- VSCode / JetBrains IDEs ---
+.vscode/
+.idea/
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
 *.swp
 *~
 ._*
 
-# Migration files (optional, uncomment if you manage migrations manually)
-# migrations/
-# *.pyc
-
-# Static and media files (if handled by a CDN or separate deployment)
-staticfiles/
-
-# Node.js/NPM (if using frontend tools with Django)
+# --- Node / Frontend tools ---
 node_modules/
 package-lock.json
+yarn.lock
 
-# macOS
-.DS_Store
+# --- Static & Media (if generated or handled via CDN) ---
+staticfiles/
+static/
+media/
+media_root/
 
-# Windows
-Thumbs.db
-ehthumbs.db
-
-# Temporary files
+# --- Compiled or temporary files ---
 *.tmp
 *.bak
 *.old
 
-# Test artifacts
-htmlcov/
-.tox/
-.coverage
-.pytest_cache/
+# --- Optional: ignore Django migrations (if you manage manually) ---
+# migrations/
+# */migrations/*.py
+# */migrations/*.pyc
+
+# --- Server & deployment ---
+*.pid
+uwsgi.log
+gunicorn.log
+celerybeat.pid
+celerybeat-schedule
