@@ -1,8 +1,8 @@
 from pathlib import Path
+from users.models import User
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -26,6 +26,8 @@ INSTALLED_APPS = [
     'users',
     'posts'
 ]
+
+AUTH_USER_MODEL = User
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
