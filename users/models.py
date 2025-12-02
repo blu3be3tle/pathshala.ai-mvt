@@ -4,4 +4,4 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    bio = models.CharField(150)
+    bio = models.TextField(blank=True, null=True)
