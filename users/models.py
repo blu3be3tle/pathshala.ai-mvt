@@ -4,4 +4,10 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    bio = models.TextField(blank=True, null=True)
+    pass
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    bio = models.CharField(max_length=250, blank=True)
