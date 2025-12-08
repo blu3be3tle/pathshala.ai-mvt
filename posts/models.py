@@ -1,5 +1,5 @@
 from django.db import models
-from django.conf import settings.AUTH_USER_MODEL as User
+from django.conf import settings
 
 # Create your models here.
 
@@ -22,7 +22,7 @@ class Post(models.Model):
 
 class Like(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE, related_name='likes')
+                             on_delete=models.CASCADE, related_name='given_likes')
     post = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE, related_name='likes')
+                             on_delete=models.CASCADE, related_name='received_likes')
     created_at = models.DateTimeField(auto_now_add=True)
