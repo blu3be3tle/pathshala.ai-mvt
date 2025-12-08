@@ -11,7 +11,7 @@ class Category(models.Model):
 
 class Post(models.Model):
     author = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+        settings.AUTH_USER_MODEL, related_name='posts', on_delete=models.CASCADE)
     title = models.CharField(max_length=250)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, default='1')
     content = models.TextField()
