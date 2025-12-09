@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import User
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 
 # Create your views here.
 
@@ -33,3 +33,8 @@ def signin(request):
             return redirect("post_list")
 
     return render(request, "users/signin.html")
+
+
+def signout(request):
+    logout(request)
+    return redirect("signin")
