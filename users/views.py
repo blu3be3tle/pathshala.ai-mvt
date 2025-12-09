@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import User
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 
 # Create your views here.
 
@@ -21,3 +21,15 @@ def signup(request):
 
     return render(request, "users/signup.html")
 
+
+def signin(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+
+        user = authenticate(request, username, password)
+        if user:
+            login(request, user)
+            return redirect("post_list")
+
+    return render(request, "users/signin.html")
