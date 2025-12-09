@@ -22,7 +22,7 @@ def signup(request):
     return render(request, "users/signup.html")
 
 
-def signin(request):
+def login(request):
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
@@ -32,9 +32,9 @@ def signin(request):
             login(request, user)
             return redirect("post_list")
 
-    return render(request, "users/signin.html")
+    return render(request, "users/login.html")
 
 
-def signout(request):
+def logout(request):
     logout(request)
-    return redirect("signin")
+    return redirect("login")
