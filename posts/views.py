@@ -6,8 +6,8 @@ from django.contrib.auth.decorators import login_required
 
 
 def post_list(request):
-    post = Post.objects.select_related("user").all().order_by("-created_at")
-    return render(request, "posts/post_list.html", {"post": post})
+    posts = Post.objects.select_related("user").all().order_by("-created_at")
+    return render(request, "posts/post_list.html", {"posts": posts})
 
 
 def post_detail(request, pk):
