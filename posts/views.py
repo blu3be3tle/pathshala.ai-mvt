@@ -1,15 +1,16 @@
 from django.shortcuts import render, redirect
+from .models import Post
 
 # Create your views here.
 
 
 def post_list(request):
-    post = Post.object.select_related("user").all().order_by("-created_at")
+    post = Post.objects.select_related("user").all().order_by("-created_at")
     return render(request, "posts/post_list.html", {"post": post})
 
 
 def post_detail(request, pk):
-    post = Post.object.get(id=pk)
+    post = Post.objects.get(id=pk)
     return render(request, "posts/post_detail.html", {"post": post})
 
 
