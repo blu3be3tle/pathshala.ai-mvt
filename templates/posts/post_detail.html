@@ -1,4 +1,7 @@
-<h2>{{ post.user.username }}</h2>
+<p>
+  <strong>{{ post.user.username }}</strong>
+  {{ post.created_at|timesince }} ago
+</p>
 <h1>{{ post.title }}</h1>
-<p>Posted on: {{ post.created_at }}</p>
 <p>{{ post.content }}</p>
+<p>Like: {{ post.likes.count }}</p>
