@@ -19,7 +19,9 @@ def post_detail(request, pk):
 def post_create(request):
     if request.method == "POST":
         content = request.POST.get("content")
-        Post.objects.create(user=request.user, content=content)
+        Post.objects.create(user=request.user,
+                            content=content,
+                            title="Untitled Post")
         return redirect("post_list")
 
     return render(request, "posts/post_create.html")
