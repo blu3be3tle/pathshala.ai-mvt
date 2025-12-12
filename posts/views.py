@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post
 from django.contrib.auth.decorators import login_required
-
+from .forms import PostForm
 # Create your views here.
 
 
@@ -18,10 +18,47 @@ def post_detail(request, pk):
 @login_required
 def post_create(request):
     if request.method == "POST":
-        content = request.POST.get("content")
-        Post.objects.create(user=request.user,
-                            content=content,
-                            title="Untitled Post")
-        return redirect("post_list")
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user = request.user
+            post.save()
+            return redirect("post_list")
 
-    return render(request, "posts/post_create.html")
+    else:
+        form = PostForm()
+
+    return render(request, "posts/post_form.html", {'form': form, 'title': 'Create Post'})
+
+
+@login_required
+def post_edit(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+
+    if request.user != post.user:
+        return redirect('post_list')
+
+    if request.method == "POST":
+        form = PostForm(request, instance=post)
+        if form.is_valid():
+            form.save()
+            return redirect('post_detail', pk=pk)
+
+        else:
+            form = PostForm(instance=post)
+
+    return redirect(request, 'posts/post_form.html', {'form': form, 'title': 'Edit Post'})
+
+
+@login_required
+def post_delete(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+
+    if request.user != post.user:
+        return redirect('post_list')
+
+    if request.method == "POST":
+        post.delete()
+        return redirect('post_list')
+
+    return render(request, 'posts/delete_confirm', {'post': post})
