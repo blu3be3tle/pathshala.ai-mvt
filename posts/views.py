@@ -61,4 +61,4 @@ def post_delete(request, pk):
         post.delete()
         return redirect('post_list')
 
-    return render(request, 'posts/delete_confirm', {'post': post})
+    return render(request, 'posts/delete_confirm.html', {'post': post})
