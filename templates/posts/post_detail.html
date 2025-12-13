@@ -1,7 +1,17 @@
-<p>
-  <strong>{{ post.user.username }}</strong>
-  {{ post.created_at|timesince }} ago
-</p>
-<h1>{{ post.title }}</h1>
-<p>{{ post.content }}</p>
-<p>Like: {{ post.likes.count }}</p>
+
+
+{% block content %}
+  <div class="border p-4 rounded">
+    <h2 class="text-xl font-bold mb-2">{{ post.user.username }}</h2>
+    <p>{{ post.content }}</p>
+
+    <p class="text-gray-500 text-sm mt-2">Posted {{ post.created_at|timesince }} ago</p>
+
+    {% if request.user == post.user %}
+      <a href="{% url 'post_edit' post.pk %}" class="text-yellow-600 mr-2">Edit</a>
+      <a href="{% url 'post_delete' post.pk %}" class="text-red-600">Delete</a>
+    {% endif %}
+  </div>
+
+  <a href="{% url 'post_list' %}" class="text-blue-600 mt-4 block">Back to Feed</a>
+{% endblock %}
