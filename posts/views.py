@@ -35,19 +35,21 @@ def post_create(request):
 def post_edit(request, pk):
     post = get_object_or_404(Post, pk=pk)
 
-    if request.user != post.user:
+    if post.user != request.user:
         return redirect('post_list')
 
     if request.method == "POST":
-        form = PostForm(request, instance=post)
+        form = PostForm(request.POST, instance=post)
         if form.is_valid():
             form.save()
             return redirect('post_detail', pk=pk)
+    else:
+        form = PostForm(instance=post)
 
-        else:
-            form = PostForm(instance=post)
-
-    return redirect(request, 'posts/post_form.html', {'form': form, 'title': 'Edit Post'})
+    return render(request, 'posts/post_form.html', {
+        'form': form,
+        'title': 'Edit Post'
+    })
 
 
 @login_required
