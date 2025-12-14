@@ -7,13 +7,23 @@ from django.views.decorators.http import require_POST
 
 
 def post_list(request):
-    posts = Post.objects.select_related("user").all().order_by("-created_at")
+    posts = Post.objects.select_related('user').order_by('-created_at')
     return render(request, "posts/post_list.html", {"posts": posts})
 
 
 def post_detail(request, pk):
-    post = get_object_or_404(Post.objects.select_related("user"), pk=pk)
-    return render(request, "posts/post_detail.html", {"post": post})
+    post = get_object_or_404(
+        Post.objects.select_related(
+            "user").prefetch_related('likes'),
+        pk=pk
+    )
+    is_liked = False
+    if request.user.is_authenticated:
+        is_liked = post.likes.filter(user=request.user).exists()
+    return render(request, "posts/post_detail.html", {
+        "post": post,
+        "is_liked": is_liked
+    })
 
 
 @login_required
