@@ -1,5 +1,3 @@
-
-
 {% block content %}
   <div class="border p-4 rounded">
     <h2 class="text-xl font-bold mb-2">{{ post.user.username }}</h2>
@@ -15,3 +13,16 @@
 
   <a href="{% url 'post_list' %}" class="text-blue-600 mt-4 block">Back to Feed</a>
 {% endblock %}
+
+<form method="post" action="{% url 'toggle_like' post.pk %}">
+  {% csrf_token %}
+  <button class="mt-4 px-4 py-2 bg-blue-600 text-white rounded">
+    {% if post.likes.filter(user=request.user).exists() %}
+      Unlike
+    {% else %}
+      Like
+    {% endif %}
+  </button>
+</form>
+
+<p class="mt-2 text-sm text-gray-500">{{ post.likes.count }} Likes</p>
