@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Post
+from .models import Post, Like
 from django.contrib.auth.decorators import login_required
 from .forms import PostForm
+from django.views.decorators.http import require_POST
 # Create your views here.
 
 
@@ -64,3 +65,19 @@ def post_delete(request, pk):
         return redirect('post_list')
 
     return render(request, 'posts/delete_confirm.html', {'post': post})
+
+
+@login_required
+@require_POST
+def toggle_like(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+
+    like, created = Like.objects.get_or_create(
+        user=request.user,
+        post=post
+    )
+
+    if not created:
+        like.delete()
+
+    return redirect('post_detail', pk=pk)
