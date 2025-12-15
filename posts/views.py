@@ -5,6 +5,7 @@ from .forms import PostForm
 from django.views.decorators.http import require_POST
 from django.http import HttpResponseForbidden
 # Create your views here.
+from django.db.models import Count
 
 
 def post_list(request):
@@ -15,7 +16,7 @@ def post_list(request):
 def post_detail(request, pk):
     post = get_object_or_404(
         Post.objects.select_related(
-            "user").prefetch_related('likes'),
+            "user").prefetch_related('likes').annotate(like_count=Count('likes')),
         pk=pk
     )
     is_liked = False
@@ -48,7 +49,7 @@ def post_edit(request, pk):
     post = get_object_or_404(Post, pk=pk)
 
     if post.user != request.user:
-        return HttpResponseForbidden() 
+        return HttpResponseForbidden()
 
     if request.method == "POST":
         form = PostForm(request.POST, instance=post)

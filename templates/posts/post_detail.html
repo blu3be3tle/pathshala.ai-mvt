@@ -15,9 +15,9 @@
   <form method="POST" action="{% url 'toggle_like' post.pk %}">
     {% csrf_token %}
     {% if is_liked %}
-      <button>Unlike {{ post.likes.count }}</button>
+      <button>Unlike {{ post.like_count }}</button>
     {% else %}
-      <button>Like {{ post.likes.count }}</button>
+      <button>Like {{ post.like_count }}</button>
     {% endif %}
   </form>
 
