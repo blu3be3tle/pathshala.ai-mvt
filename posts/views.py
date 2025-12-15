@@ -3,6 +3,7 @@ from .models import Post, Like
 from django.contrib.auth.decorators import login_required
 from .forms import PostForm
 from django.views.decorators.http import require_POST
+from django.http import HttpResponseForbidden
 # Create your views here.
 
 
@@ -47,7 +48,7 @@ def post_edit(request, pk):
     post = get_object_or_404(Post, pk=pk)
 
     if post.user != request.user:
-        return redirect('post_list')
+        return HttpResponseForbidden() 
 
     if request.method == "POST":
         form = PostForm(request.POST, instance=post)
@@ -68,7 +69,7 @@ def post_delete(request, pk):
     post = get_object_or_404(Post, pk=pk)
 
     if request.user != post.user:
-        return redirect('post_list')
+        return HttpResponseForbidden()
 
     if request.method == "POST":
         post.delete()
