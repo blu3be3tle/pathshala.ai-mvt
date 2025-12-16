@@ -4,9 +4,10 @@ from django.contrib.auth.decorators import login_required
 from .forms import PostForm
 from django.views.decorators.http import require_POST
 from django.http import HttpResponseForbidden
-from django.views.generic import ListView, DetailView
-# Create your views here.
+from django.views.generic import ListView, DetailView, CreateView
 from django.db.models import Count
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
 
 
 class PostListView(ListView):
@@ -16,21 +17,6 @@ class PostListView(ListView):
 
     def get_queryset(self):
         return super().get_queryset().select_related("user").order_by("-created_at")
-
-
-# def post_detail(request, pk):
-#     post = get_object_or_404(
-#         Post.objects.select_related(
-#             "user").prefetch_related('likes').annotate(like_count=Count('likes')),
-#         pk=pk
-#     )
-#     is_liked = False
-#     if request.user.is_authenticated:
-#         is_liked = post.likes.filter(user=request.user).exists()
-#     return render(request, "posts/post_detail.html", {
-#         "post": post,
-#         "is_liked": is_liked
-#     })
 
 
 class PostDetailView(DetailView):
@@ -61,20 +47,20 @@ class PostDetailView(DetailView):
         return context
 
 
-@login_required
-def post_create(request):
-    if request.method == "POST":
-        form = PostForm(request.POST)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.user = request.user
-            post.save()
-            return redirect("post_list")
+class PostCreateView(LoginRequiredMixin, CreateView):
+    model = Post
+    form_class = PostForm
+    template_name = 'posts/post_form.html'
+    success_url = reverse_lazy('post_list')
 
-    else:
-        form = PostForm()
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
-    return render(request, "posts/post_form.html", {'form': form, 'title': 'Create Post'})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Create Post'
+        return context
 
 
 @login_required
