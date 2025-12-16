@@ -4,13 +4,18 @@ from django.contrib.auth.decorators import login_required
 from .forms import PostForm
 from django.views.decorators.http import require_POST
 from django.http import HttpResponseForbidden
+from django.views.generic import ListView
 # Create your views here.
 from django.db.models import Count
 
 
-def post_list(request):
-    posts = Post.objects.select_related('user').order_by('-created_at')
-    return render(request, "posts/post_list.html", {"posts": posts})
+class PostListView(ListView):
+    model = Post
+    template_name = "posts/post_list.html"
+    context_object_name = "posts"
+
+    def get_queryset(self):
+        return super().get_queryset().select_related("user").order_by("-created_at")
 
 
 def post_detail(request, pk):
