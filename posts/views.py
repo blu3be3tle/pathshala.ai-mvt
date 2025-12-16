@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import PostForm
 from django.views.decorators.http import require_POST
 from django.http import HttpResponseForbidden
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 # Create your views here.
 from django.db.models import Count
 
@@ -18,19 +18,47 @@ class PostListView(ListView):
         return super().get_queryset().select_related("user").order_by("-created_at")
 
 
-def post_detail(request, pk):
-    post = get_object_or_404(
-        Post.objects.select_related(
-            "user").prefetch_related('likes').annotate(like_count=Count('likes')),
-        pk=pk
-    )
-    is_liked = False
-    if request.user.is_authenticated:
-        is_liked = post.likes.filter(user=request.user).exists()
-    return render(request, "posts/post_detail.html", {
-        "post": post,
-        "is_liked": is_liked
-    })
+# def post_detail(request, pk):
+#     post = get_object_or_404(
+#         Post.objects.select_related(
+#             "user").prefetch_related('likes').annotate(like_count=Count('likes')),
+#         pk=pk
+#     )
+#     is_liked = False
+#     if request.user.is_authenticated:
+#         is_liked = post.likes.filter(user=request.user).exists()
+#     return render(request, "posts/post_detail.html", {
+#         "post": post,
+#         "is_liked": is_liked
+#     })
+
+
+class PostDetailView(DetailView):
+    model = Post
+    template_name = "posts/post_detail.html"
+    context_object_name = "post"
+
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .select_related('user')
+            .prefetch_related('likes')
+            .annotate(like_count=Count('likes'))
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        post = self.object
+        user = self.request.user
+
+        context['is_liked'] = (
+            user.is_authenticated
+            and post.likes.filter(user=user).exists()
+        )
+
+        return context
 
 
 @login_required
