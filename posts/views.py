@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import PostForm
 from django.views.decorators.http import require_POST
 from django.http import HttpResponseForbidden
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.db.models import Count
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
@@ -81,18 +81,10 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return context
 
 
-@login_required
-def post_delete(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-
-    if request.user != post.user:
-        return HttpResponseForbidden()
-
-    if request.method == "POST":
-        post.delete()
-        return redirect('post_list')
-
-    return render(request, 'posts/delete_confirm.html', {'post': post})
+class PostDeleteView(DeleteView, LoginRequiredMixin, UserPassesTestMixin):
+    model = Post
+    template_name = 'posts/delete_confirm.html'
+    success_url = reverse_lazy('post_list')
 
 
 @login_required
