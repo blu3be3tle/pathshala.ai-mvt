@@ -4,10 +4,11 @@ from django.contrib.auth.decorators import login_required
 from .forms import PostForm
 from django.views.decorators.http import require_POST
 from django.http import HttpResponseForbidden
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.db.models import Count
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
+from django.core.exceptions import PermissionDenied
 
 
 class PostListView(ListView):
@@ -63,25 +64,21 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         return context
 
 
-@login_required
-def post_edit(request, pk):
-    post = get_object_or_404(Post, pk=pk)
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Post
+    form_class = PostForm
+    template_name = 'posts/post_form.html'
 
-    if post.user != request.user:
-        return HttpResponseForbidden()
+    def test_func(self):
+        return self.get_object().user == self.request.user
 
-    if request.method == "POST":
-        form = PostForm(request.POST, instance=post)
-        if form.is_valid():
-            form.save()
-            return redirect('post_detail', pk=pk)
-    else:
-        form = PostForm(instance=post)
+    def get_success_url(self):
+        return reverse_lazy('post_detail', kwargs={'pk': self.object.pk})
 
-    return render(request, 'posts/post_form.html', {
-        'form': form,
-        'title': 'Edit Post'
-    })
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Edit Post'
+        return context
 
 
 @login_required
