@@ -86,6 +86,9 @@ class PostDeleteView(DeleteView, LoginRequiredMixin, UserPassesTestMixin):
     template_name = 'posts/delete_confirm.html'
     success_url = reverse_lazy('post_list')
 
+    def test_func(self):
+        return self.get_object().user == self.request.user
+
 
 @login_required
 @require_POST
