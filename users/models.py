@@ -5,7 +5,9 @@ from django.conf import settings
 
 
 class User(AbstractUser):
-    pass
+    profile_image = models.ImageField(
+        upload_to='profile_images', blank=True, default='profile_images/image.png'
+    )
 
 
 class Profile(models.Model):
