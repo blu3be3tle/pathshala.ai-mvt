@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  My Profile
+{% endblock %}
+
+{% block content %}
+  <h2>My Profile</h2>
+
+  <img src="{{ user.profile_image.url }}" width="120" alt="Profile Image" />
+
+  <p>
+    <strong>Username:</strong> {{ user.username }}
+  </p>
+  <p>
+    <strong>Email:</strong> {{ user.email }}
+  </p>
+  <p>
+    <strong>First name:</strong> {{ user.first_name }}
+  </p>
+  <p>
+    <strong>Last name:</strong> {{ user.last_name }}
+  </p>
+  <p>
+    <strong>Phone:</strong> {{ user.phone }}
+  </p>
+
+  <a href="{% url 'profile-edit' %}">Edit Profile</a><br />
+  <a href="{% url 'password_change' %}">Change Password</a>
+{% endblock %}
